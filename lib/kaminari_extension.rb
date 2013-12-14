@@ -1,6 +1,6 @@
 if defined?(Kaminari)
   module KaminariExtension
-    module ParseBaseExt
+    module AVBaseExt
       extend ActiveSupport::Concern
       include Kaminari::ConfigurationMethods
 
@@ -55,6 +55,6 @@ if defined?(Kaminari)
     end
   end
 
-  ParseResource::Base.send :include, KaminariExtension::ParseBaseExt
+  AVResource::Base.send :include, KaminariExtension::AVBaseExt
   Query.send               :include, KaminariExtension::QueryExt
 end
