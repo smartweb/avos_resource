@@ -1,4 +1,4 @@
-require 'parse_resource/parse_user_validator'
+require 'av_resource/av_user_validator'
 
 class AVUser < AVResource::Base
   fields :username, :password
