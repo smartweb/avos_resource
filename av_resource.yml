@@ -1,0 +1,7 @@
+development:
+  app_id: <%= ENV["AVOS_RESOURCE_APPLICATION_ID"] %>
+  master_key: <%= ENV["AVOS_RESOURCE_MASTER_KEY"] %>
+
+production:
+  app_id: <%= ENV["AVOS_RESOURCE_APPLICATION_ID"] %>
+  master_key: <%= ENV["AVOS_RESOURCE_MASTER_KEY"] %>

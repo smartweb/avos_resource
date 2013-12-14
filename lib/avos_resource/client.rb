@@ -1,7 +1,7 @@
 require "rest-client"
 require "json"
 
-module ParseResource
+module AVResource
 	class Client
 		
 	end

@@ -1,10 +1,10 @@
 require 'parse_resource/parse_user_validator'
 
-class ParseUser < ParseResource::Base
+class AVUser < AVResource::Base
   fields :username, :password
 
   def self.authenticate(username, password)
-    base_uri   = "https://api.parse.com/1/login"
+    base_uri   = "https://cn.avoscloud.com/1/login"
     app_id     = settings['app_id']
     master_key = settings['master_key']
     resource = RestClient::Resource.new(base_uri, app_id, master_key)
@@ -21,7 +21,7 @@ class ParseUser < ParseResource::Base
   end
   
   def self.authenticate_with_facebook(user_id, access_token, expires)
-    base_uri   = "https://api.parse.com/1/users"
+    base_uri   = "https://cn.avoscloud.com/1/users"
     app_id     = settings['app_id']
     master_key = settings['master_key']
     resource = RestClient::Resource.new(base_uri, app_id, master_key)
@@ -46,7 +46,7 @@ class ParseUser < ParseResource::Base
   end
   
   def self.reset_password(email)
-      base_uri   = "https://api.parse.com/1/requestPasswordReset"
+      base_uri   = "https://cn.avoscloud.com/1/requestPasswordReset"
       app_id     = settings['app_id']
       master_key = settings['master_key']
       resource = RestClient::Resource.new(base_uri, app_id, master_key)

@@ -1,5 +1,5 @@
-class ParseError
-  # ParseError actually represents both HTTP & parse.com error codes. If the
+avclass AVError
+  # AVError actually represents both HTTP & parse.com error codes. If the
   # HTTP response is 400, one can inspect the first element of the error
   # converted to_array for the HTTP error code and the 2nd element for the
   # parse error response.
@@ -39,7 +39,7 @@ class ParseError
       @error = "Loop Detected"
     else
       @error = "Unknown Error"
-      raise "Parse error #{code}: #{@error} #{@msg}"
+      raise "AV error #{code}: #{@error} #{@msg}"
     end
   end
   

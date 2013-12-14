@@ -1,4 +1,4 @@
-class ParseRole < ParseResource::Base
+class AVRole < AVResource::Base
   fields :name, :users, :roles
 
   def users
@@ -29,7 +29,7 @@ class ParseRole < ParseResource::Base
   end
 
   def add_user(user)
-    # Expects user parameter to be a ParseUser object
+    # Expects user parameter to be a AVUser object
     base_uri   = "https://api.parse.com/1/roles/#{self.objectId}"
     app_id     = self.class.settings['app_id']
     master_key = self.class.settings['master_key']
@@ -47,7 +47,7 @@ class ParseRole < ParseResource::Base
   end
 
   def remove_user(user)
-    # Expects user parameter to be a ParseUser object
+    # Expects user parameter to be a AVUser object
     
     base_uri   = "https://api.parse.com/1/roles/#{self.objectId}"
     app_id     = self.class.settings['app_id']

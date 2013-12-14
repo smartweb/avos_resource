@@ -1,4 +1,4 @@
-class ParseUserValidator < ActiveModel::Validator
+class AVUserValidator < ActiveModel::Validator
   def validate(record)
     @user = User.where(:username => record.username)
     if @user.length > 0

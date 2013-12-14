@@ -14,7 +14,7 @@ class Query
   end
 
   def limit(limit)
-    # If > 1000, set chunking, because large queries over 1000 need it with Parse
+    # If > 1000, set chunking, because large queries over 1000 need it with AV
     chunk(1000) if limit > 1000
 
     criteria[:limit] = limit
@@ -54,7 +54,7 @@ class Query
 
   def near(klass, geo_point, options)
     if geo_point.is_a? Array
-      geo_point = ParseGeoPoint.new :latitude => geo_point[0], :longitude => geo_point[1]
+      geo_point = AVGeoPoint.new :latitude => geo_point[0], :longitude => geo_point[1]
     end
 
     query = { "$nearSphere" => geo_point.to_pointer }
@@ -72,11 +72,11 @@ class Query
 
   def within_box(klass, geo_point_south, geo_point_north)
     if geo_point_south.is_a? Array
-      geo_point_south = ParseGeoPoint.new :latitude => geo_point_south[0], :longitude => geo_point_south[1]
+      geo_point_south = AVGeoPoint.new :latitude => geo_point_south[0], :longitude => geo_point_south[1]
     end
 
     if geo_point_north.is_a? Array
-      geo_point_north = ParseGeoPoint.new :latitude => geo_point_north[0], :longitude => geo_point_north[1]
+      geo_point_north = AVGeoPoint.new :latitude => geo_point_north[0], :longitude => geo_point_north[1]
     end
 
     query = { "$within" => { "$box" => [geo_point_south.to_pointer, geo_point_north.to_pointer]}}

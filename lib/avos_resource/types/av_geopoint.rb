@@ -1,4 +1,4 @@
-class ParseGeoPoint
+class AVGeoPoint
   attr_accessor :latitude, :longitude
 
   def initialize(hash=nil)

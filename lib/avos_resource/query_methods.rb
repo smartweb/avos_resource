@@ -1,7 +1,7 @@
 #require 'parse_resource'
 require 'parse_resource/query'
 
-module ParseResource
+module AVResource
 
 	module QueryMethods
 
@@ -19,9 +19,9 @@ module ParseResource
 	      Query.new(self).count(1)
 	    end
 
-	    # Find all ParseResource::Base objects for that model.
+	    # Find all AVResource::Base objects for that model.
 	    #
-	    # @return [Array] an `Array` of objects that subclass `ParseResource`.
+	    # @return [Array] an `Array` of objects that subclass `AVResource`.
 	    def all
 	      Query.new(self).all
 	    end

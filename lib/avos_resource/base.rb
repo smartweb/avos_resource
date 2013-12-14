@@ -5,19 +5,19 @@ require "erb"
 require "rest-client"
 require "json"
 require "active_support/hash_with_indifferent_access"
-require "parse_resource/query"
-require "parse_resource/query_methods"
-require "parse_resource/parse_error"
-require "parse_resource/parse_exceptions"
-require "parse_resource/types/parse_geopoint"
+require "av_resource/query"
+require "av_resource/query_methods"
+require "av_resource/av_error"
+require "av_resource/av_exceptions"
+require "av_resource/types/av_geopoint"
 
-module ParseResource
+module AVResource
 
 
   class Base
-    # ParseResource::Base provides an easy way to use Ruby to interace with a Parse.com backend
+    # AVResource::Base provides an easy way to use Ruby to interace with a AV.com backend
     # Usage:
-    #  class Post < ParseResource::Base
+    #  class Post < AVResource::Base
     #    fields :title, :author, :body
     #  end
 
@@ -32,10 +32,10 @@ module ParseResource
 
     define_model_callbacks :save, :create, :update, :destroy
 
-    # Instantiates a ParseResource::Base object
+    # Instantiates a AVResource::Base object
     #
     # @params [Hash], [Boolean] a `Hash` of attributes and a `Boolean` that should be false only if the object already exists
-    # @return [ParseResource::Base] an object that subclasses `Parseresource::Base`
+    # @return [AVResource::Base] an object that subclasses `AVresource::Base`
     def initialize(attributes = {}, new=true)
       #attributes = HashWithIndifferentAccess.new(attributes)
 
@@ -157,10 +157,10 @@ module ParseResource
 
     @@settings ||= nil
 
-    # Explicitly set Parse.com API keys.
+    # Explicitly set cn.avoscloud.com API keys.
     #
-    # @param [String] app_id the Application ID of your Parse database
-    # @param [String] master_key the Master Key of your Parse database
+    # @param [String] app_id the Application ID of your AV database
+    # @param [String] master_key the Master Key of your AV database
     def self.load!(app_id, master_key)
       @@settings = {"app_id" => app_id, "master_key" => master_key}
     end
@@ -182,12 +182,12 @@ module ParseResource
       end
     end
 
-    # Gets the current class's Parse.com base_uri
+    # Gets the current class's cn.avoscloud.com base_uri
     def self.model_base_uri
-      "https://api.parse.com/1/#{model_name_uri}"
+      "https://cn.avoscloud.com/1/#{model_name_uri}"
     end
 
-    # Gets the current instance's parent class's Parse.com base_uri
+    # Gets the current instance's parent class's AV.com base_uri
     def model_base_uri
       self.class.send(:model_base_uri)
     end
@@ -208,13 +208,13 @@ module ParseResource
     # Batch requests
     # Sends multiple requests to /batch
     # Set slice_size to send larger batches. Defaults to 20 to prevent timeouts.
-    # Parse doesn't support batches of over 20.
+    # AV doesn't support batches of over 20.
     #
     def self.batch_save(save_objects, slice_size = 20, method = nil)
       return true if save_objects.blank?
       load_settings
 
-      base_uri = "https://api.parse.com/1/batch"
+      base_uri = "https://cn.avoscloud.com/1/batch"
       app_id     = @@settings['app_id']
       master_key = @@settings['master_key']
 
@@ -269,12 +269,12 @@ module ParseResource
     end
 
     def self.delete_all(o)
-      raise StandardError.new("Parse Resource: delete_all doesn't exist. Did you mean destroy_all?")
+      raise StandardError.new("AV Resource: delete_all doesn't exist. Did you mean destroy_all?")
     end
 
     def self.load_settings
       @@settings ||= begin
-        path = "config/parse_resource.yml"
+        path = "config/av_resource.yml"
         environment = defined?(Rails) && Rails.respond_to?(:env) ? Rails.env : ENV["RACK_ENV"]
         if FileTest.exist? (path) 
           YAML.load(ERB.new(File.new(path).read).result)[environment]
@@ -284,7 +284,7 @@ module ParseResource
           settings['master_key'] = ENV["PARSE_RESOURCE_MASTER_KEY"]
           settings
         else
-          raise "Cannot load parse_resource.yml and API keys are not set in environment"
+          raise "Cannot load av_resource.yml and API keys are not set in environment"
         end
       end
       @@settings
@@ -297,7 +297,7 @@ module ParseResource
     def self.upload(file_instance, filename, options={})
       load_settings
 
-      base_uri = "https://api.parse.com/1/files"
+      base_uri = "https://cn.avoscloud.com/1/files"
 
       #refactor to settings['app_id'] etc
       app_id     = @@settings['app_id']
@@ -316,10 +316,10 @@ module ParseResource
       false
     end
 
-    # Find a ParseResource::Base object by ID
+    # Find a AVResource::Base object by ID
     #
-    # @param [String] id the ID of the Parse object you want to find.
-    # @return [ParseResource] an object that subclasses ParseResource.
+    # @param [String] id the ID of the AV object you want to find.
+    # @return [AVResource] an object that subclasses AVResource.
     def self.find(id)
       raise RecordNotFound, "Couldn't find #{name} without an ID" if id.blank?
       record = where(:objectId => id).first
@@ -327,24 +327,24 @@ module ParseResource
       record
     end
 
-    # Find a ParseResource::Base object by chaining #where method calls.
+    # Find a AVResource::Base object by chaining #where method calls.
     #
     def self.where(*args)
       Query.new(self).where(*args)
     end
 
 
-    include ParseResource::QueryMethods
+    include AVResource::QueryMethods
 
 
     def self.chunk(attribute)
       Query.new(self).chunk(attribute)
     end
 
-    # Create a ParseResource::Base object.
+    # Create a AVResource::Base object.
     #
     # @param [Hash] attributes a `Hash` of attributes
-    # @return [ParseResource] an object that subclasses `ParseResource`. Or returns `false` if object fails to save.
+    # @return [AVResource] an object that subclasses `AVResource`. Or returns `false` if object fails to save.
     def self.create(attributes = {})
       attributes = HashWithIndifferentAccess.new(attributes)
       obj = new(attributes)
@@ -380,7 +380,7 @@ module ParseResource
       self.class.resource
     end
 
-    # create RESTful resource for the specific Parse object
+    # create RESTful resource for the specific AV object
     # sends requests to [base_uri]/[classname]/[objectId]
     def instance_resource
       self.class.resource["#{self.id}"]
@@ -453,9 +453,9 @@ module ParseResource
       else
         error_response = JSON.parse(resp)
         if error_response["error"]
-          pe = ParseError.new(error_response["code"], error_response["error"])
+          pe = AVError.new(error_response["code"], error_response["error"])
         else
-          pe = ParseError.new(resp.code.to_s)
+          pe = AVError.new(resp.code.to_s)
         end
         self.errors.add(pe.code.to_s.to_sym, pe.msg)
         self.error_instances << pe
@@ -534,7 +534,7 @@ module ParseResource
         when "File"
           result = attrs[k]["url"]
         when "GeoPoint"
-          result = ParseGeoPoint.new(attrs[k])
+          result = AVGeoPoint.new(attrs[k])
         end #todo: support other types https://www.parse.com/docs/rest#objects-types
       else
         result =  attrs["#{k}"]
